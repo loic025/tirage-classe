@@ -96,31 +96,30 @@ window.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById("classeTitle").textContent =
     "Classe : " + classe.toUpperCase();
-});
-  const COLORS = ['#E03E2D','#F5C518','#3DAA44','#1E4D9B','#F47920','#8B5CF6','#EC4899'];
-  let allItems = [];
-  let remaining = [];
-  let drawn = [];
-  let isSpinning = false;
-  let colorMap = {};
 
-function loadList() {
-  const raw = document.getElementById('inputList').value;
+  const saved = localStorage.getItem(classe);
 
-  const items = raw.split('\n')
-    .map(s => s.trim())
-    .filter(s => s.length > 0);
+  let items;
 
-  if (items.length === 0) return;
+  if (saved) {
+    items = JSON.parse(saved);
+  } else {
+    items = defaultLists[classe] || [];
+  }
 
   allItems = items;
   remaining = [...items];
-  drawn = [];
+
+  document.getElementById("inputList").value = items.join("\n");
 
   colorMap = {};
   items.forEach((item, i) => {
     colorMap[item] = COLORS[i % COLORS.length];
   });
+
+  updateUI();
+  resetReelDisplay();
+});
 
   // 💾 ICI (bonne place)
   localStorage.setItem(classe, JSON.stringify(items));
@@ -128,7 +127,6 @@ function loadList() {
   updateUI();
   resetReelDisplay();
   showResult('', false);
-}
 
  function resetAll() {
   remaining = [...allItems];
@@ -303,11 +301,7 @@ function loadList() {
     updateUI();
     resetReelDisplay();
   }
-
-  loadList(); // initialise
 });
-
-localStorage.setItem(classe, JSON.stringify(allItems));
 
   function shuffleArray(arr) {
     for (let i = arr.length - 1; i > 0; i--) {
