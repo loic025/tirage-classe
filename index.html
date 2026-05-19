@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tirage au sort en classe</title>
+  <style>
+    :root {
+      --brown: #6b3e26;
+      --yellow: #f5c400;
+      --red: #d62828;
+      --green: #2a9d55;
+      --blue: #277da1;
+      --orange: #f77f00;
+      --bg: #fff8ea;
+      --white: #ffffff;
+      --dark: #2d1b12;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Trebuchet MS", Arial, sans-serif;
+      background: linear-gradient(135deg, #111111, #2d1b12);
+      color: var(--dark);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1100px;
+      background: rgba(255,255,255,0.92);
+      border-radius: 28px;
+      padding: 28px;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.2);
+      border: 8px solid var(--brown);
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 0;
+      font-size: 2.8rem;
+      color: var(--brown);
+      text-shadow: 2px 2px 0 var(--yellow);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .panel {
+      background: var(--bg);
+      border-radius: 22px;
+      padding: 20px;
+      border: 4px solid var(--blue);
+    }
+
+    h2 {
+      margin-top: 0;
+      color: var(--red);
+    }
+
+    textarea {
+      width: 100%;
+      height: 260px;
+      resize: vertical;
+      border-radius: 16px;
+      border: 3px solid var(--green);
+      padding: 14px;
+      font-size: 1rem;
+      font-family: inherit;
+      background: white;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 14px 20px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+      color: white;
+      min-width: 180px;
+    }
+
+    button:hover {
+      transform: scale(1.04);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .draw-btn {
+      background: var(--red);
+    }
+
+    .reset-btn {
+      background: var(--blue);
+    }
+
+    .reload-btn {
+      background: var(--green);
+    }
+
+    .slot-machine {
+      margin-top: 12px;
+      background: linear-gradient(180deg, var(--brown), #4b2c1c);
+      border-radius: 28px;
+      padding: 24px;
+      border: 6px solid var(--yellow);
+      box-shadow: inset 0 0 18px rgba(255,255,255,0.15);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .lights {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .light {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      animation: blink 1s infinite alternate;
+    }
+
+    .light:nth-child(odd) {
+      background: var(--yellow);
+    }
+
+    .light:nth-child(even) {
+      background: var(--red);
+      animation-delay: 0.4s;
+    }
+
+    @keyframes blink {
+      from { opacity: 0.5; }
+      to { opacity: 1; }
+    }
+
+    .display {
+      height: 140px;
+      background: white;
+      border-radius: 20px;
+      border: 6px solid var(--orange);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .reel {
+      position: absolute;
+      width: 100%;
+      text-align: center;
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--brown);
+      padding: 0 20px;
+      word-break: break-word;
+    }
+
+    .winner {
+      animation: pop 0.5s ease;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0.8); opacity: 0; }
+      70% { transform: scale(1.08); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .history {
+      margin-top: 18px;
+      background: white;
+      border-radius: 16px;
+      border: 3px dashed var(--orange);
+      padding: 14px;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+
+    .history ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .counter {
+      margin-top: 12px;
+      font-weight: bold;
+      color: var(--blue);
+    }
+
+    .footer-note {
+      margin-top: 14px;
+      text-align: center;
+      color: var(--brown);
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 850px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 2.1rem;
+      }
+
+      .reel {
+        font-size: 1.5rem;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Tirage au sort en classe</h1>
+
+    <div class="layout">
+      <div class="panel">
+        <h2>Participants / sujets</h2>
+        <p>Collez une information par ligne : prénom, nom, groupe ou sujet.</p>
+
+        <textarea id="entries" placeholder="Exemple :&#10;Emma&#10;Lucas Martin&#10;Exposé Histoire&#10;Groupe 3"></textarea>
+
+        <div class="buttons">
+          <button class="reload-btn" id="loadBtn">Charger la liste</button>
+          <button type="button" class="reload-btn" id="importBtn">Importer un fichier</button>
+          <input type="file" id="fileInput" accept=".txt,.csv,.xlsx" style="display:none;" />
+          <button class="draw-btn" id="drawBtn">Lancer le tirage</button>
+          <button class="reset-btn" id="resetBtn">Remettre à zéro</button>
+        </div>
+
+        <div class="counter" id="counter">
+          Aucun élément chargé.
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Machine à sous du tirage</h2>
+
+        <div class="slot-machine">
+          <div class="lights">
+            <div class="light"></div>
+            <div class="light"></div>
+            <div class="light"></div>
+            <div class="light"></div>
+            <div class="light"></div>
+            <div class="light"></div>
+            <div class="light"></div>
+            <div class="light"></div>
+          </div>
+
+          <div class="display">
+            <div class="reel" id="reel">Prêt pour le tirage 🎰</div>
+          </div>
+        </div>
+
+        <div class="history">
+          <strong>Historique des tirages :</strong>
+          <ul id="historyList"></ul>
+        </div>
+
+        <div class="footer-note">
+          Chaque élément tiré est automatiquement retiré des prochains tirages.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Librairie XLSX pour lecture des fichiers Excel -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+  <script>
+    let availableEntries = [];
+    let drawHistory = [];
+    let spinning = false;
+
+    const entriesInput = document.getElementById('entries');
+    const reel = document.getElementById('reel');
+    const historyList = document.getElementById('historyList');
+    const counter = document.getElementById('counter');
+    const drawBtn = document.getElementById('drawBtn');
+
+    function updateCounter() {
+      if (availableEntries.length === 0) {
+        counter.textContent = 'Aucun élément disponible.';
+      } else {
+        counter.textContent = `${availableEntries.length} élément(s) restant(s) pour le tirage.`;
+      }
+    }
+
+    function loadEntries() {
+      const raw = entriesInput.value
+        .split('\n')
+        .map(item => item.trim())
+        .filter(item => item.length > 0);
+
+      const unique = [...new Set(raw)];
+
+      availableEntries = unique;
+      drawHistory = [];
+      historyList.innerHTML = '';
+
+      reel.textContent = availableEntries.length
+        ? 'Liste chargée 🎉'
+        : 'Ajoutez des éléments à tirer';
+
+      updateCounter();
+    }
+
+    function addToHistory(item) {
+      const li = document.createElement('li');
+      li.textContent = item;
+      historyList.prepend(li);
+    }
+
+    async function spinAndDraw() {
+      if (spinning) return;
+
+      if (availableEntries.length === 0) {
+        reel.textContent = 'Plus aucun élément disponible 😅';
+        return;
+      }
+
+      spinning = true;
+      drawBtn.disabled = true;
+      reel.classList.remove('winner');
+
+      const spinDuration = 3000;
+      const intervalTime = 80;
+
+      const interval = setInterval(() => {
+        const randomIndex = Math.floor(Math.random() * availableEntries.length);
+        reel.textContent = availableEntries[randomIndex];
+      }, intervalTime);
+
+      await new Promise(resolve => setTimeout(resolve, spinDuration));
+
+      clearInterval(interval);
+
+      const winnerIndex = Math.floor(Math.random() * availableEntries.length);
+      const winner = availableEntries[winnerIndex];
+
+      availableEntries.splice(winnerIndex, 1);
+      drawHistory.push(winner);
+
+      reel.textContent = `🎉 ${winner} 🎉`;
+      reel.classList.add('winner');
+
+      addToHistory(winner);
+      updateCounter();
+
+      spinning = false;
+      drawBtn.disabled = false;
+    }
+
+    async function importFile(file) {
+      const extension = file.name.split('.').pop().toLowerCase();
+
+      if (extension === 'txt' || extension === 'csv') {
+        const text = await file.text();
+        entriesInput.value = text
+          .split(/\r?\n|,|;/)
+          .map(v => v.trim())
+          .filter(v => v)
+          .join('\n');
+
+        loadEntries();
+        return;
+      }
+
+      if (extension === 'xlsx') {
+        const data = await file.arrayBuffer();
+        const workbook = XLSX.read(data);
+        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+
+        const values = rows
+          .flat()
+          .map(v => String(v).trim())
+          .filter(v => v);
+
+        entriesInput.value = values.join('\n');
+        loadEntries();
+        return;
+      }
+
+      alert('Format non pris en charge.');
+    }
+
+    function resetHistory() {
+      availableEntries = [];
+      drawHistory = [];
+      entriesInput.value = '';
+      historyList.innerHTML = '';
+      reel.textContent = 'Réinitialisation effectuée ✨';
+      updateCounter();
+    }
+
+    document.getElementById('loadBtn').addEventListener('click', loadEntries);
+    document.getElementById('drawBtn').addEventListener('click', spinAndDraw);
+    document.getElementById('resetBtn').addEventListener('click', resetHistory);
+
+    const importBtn = document.getElementById('importBtn');
+    const fileInput = document.getElementById('fileInput');
+
+    importBtn.addEventListener('click', () => {
+      fileInput.value = '';
+      fileInput.click();
+    });
+
+    document.getElementById('fileInput').addEventListener('change', async (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        await importFile(file);
+      }
+    });
+
+    updateCounter();
+  </script>
+</body>
+</html>
