@@ -140,20 +140,24 @@ window.addEventListener('DOMContentLoaded', () => {
 }
 
   function updateUI() {
-    const total = allItems.length;
-    const rem = remaining.length;
-    const counterEl = document.getElementById('counter');
-    if (total === 0) {
-      counterEl.innerHTML = 'Aucune liste chargée';
-      document.getElementById('spinBtn').disabled = true;
-    } else if (rem === 0) {
-      counterEl.innerHTML = `<span class="no-more">Tous les participants ont été tirés !</span>`;
-      document.getElementById('spinBtn').disabled = true;
-    } else {
-      counterEl.innerHTML = `<span>${rem}</span> restant${rem>1?'s':''} sur ${total}`;
-      document.getElementById('spinBtn').disabled = false;
-    }
+  const total = allItems.length;
+  const rem = remaining.length;
+  const counterEl = document.getElementById('counter');
+  const spinBtn = document.getElementById('spinBtn');
+
+  if (total === 0) {
+    counterEl.innerHTML = 'Aucune liste chargée';
+    spinBtn.disabled = true;
+  } 
+  else if (rem === 0) {
+    counterEl.innerHTML = `<span class="no-more">Tous les participants ont été tirés !</span>`;
+    spinBtn.disabled = true;
+  } 
+  else {
+    counterEl.innerHTML = `<span>${rem}</span> restant${rem > 1 ? 's' : ''} sur ${total}`;
+    spinBtn.disabled = false;
   }
+}
 
   function resetReelDisplay() {
     const track = document.getElementById('reelTrack');
@@ -277,31 +281,6 @@ window.addEventListener('DOMContentLoaded', () => {
     }
     setTimeout(() => { container.innerHTML = ''; }, 3000);
   }
-
-  // Auto-load on page start
- window.addEventListener('DOMContentLoaded', () => {
-  const params = new URLSearchParams(window.location.search);
-  classe = params.get("classe") || "miq6";
-
-  document.getElementById("classeTitle").textContent =
-    "Classe : " + classe.toUpperCase();
-
-  const saved = localStorage.getItem(classe);
-
-  if (saved) {
-    const items = JSON.parse(saved);
-    allItems = items;
-    remaining = [...items];
-
-    colorMap = {};
-    items.forEach((item, i) => {
-      colorMap[item] = COLORS[i % COLORS.length];
-    });
-
-    updateUI();
-    resetReelDisplay();
-  }
-});
 
   function shuffleArray(arr) {
     for (let i = arr.length - 1; i > 0; i--) {
