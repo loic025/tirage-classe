@@ -43,15 +43,8 @@
 <div class="panel">
 <h2>📋 Participants</h2>
 <textarea id="inputList">Max
-  Rayan
-  Mila
-  Timéo
-  William
-  Anaïs
-  Thalia
-  Sasha
-  Paul
-  Abby
+Rayan
+Mila
 </textarea>
 <button class="btn btn-load" onclick="loadList()">✅ Charger la liste</button>
 <button class="btn btn-reset" onclick="resetAll()">🔄 Remettre à zéro</button>
@@ -87,6 +80,14 @@
 </div>
 </div>
 <script>
+
+  const defaultLists = {
+  miq6: ["Max","Rayan","Mila","Timéo","William","Anaïs","Thalia","Sasha","Paul","Abby"],
+  miq5: ["Élève1","Élève2","Élève3"],
+  miq4: ["Alice","Bob","Charlie"],
+  miq3: ["Jean","Léo","Emma"]
+};
+
   let classe = "miq6";
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -103,33 +104,42 @@ window.addEventListener('DOMContentLoaded', () => {
   let isSpinning = false;
   let colorMap = {};
 
-  function loadList() {
-    const raw = document.getElementById('inputList').value;
-    const items = raw.split('\n').map(s => s.trim()).filter(s => s.length > 0);
-    if (items.length === 0) return;
+function loadList() {
+  const raw = document.getElementById('inputList').value;
 
-    allItems = items;
-    remaining = [...items];
-    drawn = [];
-    colorMap = {};
-    items.forEach((item, i) => { colorMap[item] = COLORS[i % COLORS.length]; });
+  const items = raw.split('\n')
+    .map(s => s.trim())
+    .filter(s => s.length > 0);
 
-    updateUI();
-    resetReelDisplay();
-    showResult('', false);
-    document.getElementById('historyPanel').style.display = 'none';
-    document.getElementById('historyList').innerHTML = '';
-  }
+  if (items.length === 0) return;
 
-  function resetAll() {
-    remaining = [...allItems];
-    drawn = [];
-    updateUI();
-    resetReelDisplay();
-    showResult('', false);
-    document.getElementById('historyPanel').style.display = 'none';
-    document.getElementById('historyList').innerHTML = '';
-  }
+  allItems = items;
+  remaining = [...items];
+  drawn = [];
+
+  colorMap = {};
+  items.forEach((item, i) => {
+    colorMap[item] = COLORS[i % COLORS.length];
+  });
+
+  // 💾 ICI (bonne place)
+  localStorage.setItem(classe, JSON.stringify(items));
+
+  updateUI();
+  resetReelDisplay();
+  showResult('', false);
+}
+
+ function resetAll() {
+  remaining = [...allItems];
+  drawn = [];
+
+  updateUI();
+  resetReelDisplay();
+  showResult('', false);
+
+  localStorage.removeItem(classe); // 💾 supprime sauvegarde
+}
 
   function updateUI() {
     const total = allItems.length;
@@ -271,7 +281,33 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   // Auto-load on page start
-  window.addEventListener('DOMContentLoaded', () => loadList());
+ window.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  classe = params.get("classe") || "miq6";
+
+  document.getElementById("classeTitle").textContent =
+    "Classe : " + classe.toUpperCase();
+
+  const saved = localStorage.getItem(classe);
+
+  if (saved) {
+    const items = JSON.parse(saved);
+    allItems = items;
+    remaining = [...items];
+
+    colorMap = {};
+    items.forEach((item, i) => {
+      colorMap[item] = COLORS[i % COLORS.length];
+    });
+
+    updateUI();
+    resetReelDisplay();
+  }
+
+  loadList(); // initialise
+});
+
+localStorage.setItem(classe, JSON.stringify(allItems));
 
   function shuffleArray(arr) {
     for (let i = arr.length - 1; i > 0; i--) {
