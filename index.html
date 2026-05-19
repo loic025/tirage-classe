@@ -1,449 +1,275 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tirage au sort en classe</title>
-  <style>
-    :root {
-      --brown: #6b3e26;
-      --yellow: #f5c400;
-      --red: #d62828;
-      --green: #2a9d55;
-      --blue: #277da1;
-      --orange: #f77f00;
-      --bg: #fff8ea;
-      --white: #ffffff;
-      --dark: #2d1b12;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: "Trebuchet MS", Arial, sans-serif;
-      background: linear-gradient(135deg, #111111, #2d1b12);
-      color: var(--dark);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 24px;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 1100px;
-      background: rgba(255,255,255,0.92);
-      border-radius: 28px;
-      padding: 28px;
-      box-shadow: 0 18px 40px rgba(0,0,0,0.2);
-      border: 8px solid var(--brown);
-    }
-
-    h1 {
-      text-align: center;
-      margin-top: 0;
-      font-size: 2.8rem;
-      color: var(--brown);
-      text-shadow: 2px 2px 0 var(--yellow);
-    }
-
-    .layout {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-    }
-
-    .panel {
-      background: var(--bg);
-      border-radius: 22px;
-      padding: 20px;
-      border: 4px solid var(--blue);
-    }
-
-    h2 {
-      margin-top: 0;
-      color: var(--red);
-    }
-
-    textarea {
-      width: 100%;
-      height: 260px;
-      resize: vertical;
-      border-radius: 16px;
-      border: 3px solid var(--green);
-      padding: 14px;
-      font-size: 1rem;
-      font-family: inherit;
-      background: white;
-    }
-
-    .buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 16px;
-    }
-
-    button {
-      border: none;
-      border-radius: 999px;
-      padding: 14px 20px;
-      font-size: 1rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: transform 0.15s ease, opacity 0.15s ease;
-      color: white;
-      min-width: 180px;
-    }
-
-    button:hover {
-      transform: scale(1.04);
-    }
-
-    button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    .draw-btn {
-      background: var(--red);
-    }
-
-    .reset-btn {
-      background: var(--blue);
-    }
-
-    .reload-btn {
-      background: var(--green);
-    }
-
-    .slot-machine {
-      margin-top: 12px;
-      background: linear-gradient(180deg, var(--brown), #4b2c1c);
-      border-radius: 28px;
-      padding: 24px;
-      border: 6px solid var(--yellow);
-      box-shadow: inset 0 0 18px rgba(255,255,255,0.15);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .lights {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 20px;
-    }
-
-    .light {
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      animation: blink 1s infinite alternate;
-    }
-
-    .light:nth-child(odd) {
-      background: var(--yellow);
-    }
-
-    .light:nth-child(even) {
-      background: var(--red);
-      animation-delay: 0.4s;
-    }
-
-    @keyframes blink {
-      from { opacity: 0.5; }
-      to { opacity: 1; }
-    }
-
-    .display {
-      height: 140px;
-      background: white;
-      border-radius: 20px;
-      border: 6px solid var(--orange);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .reel {
-      position: absolute;
-      width: 100%;
-      text-align: center;
-      font-size: 2rem;
-      font-weight: bold;
-      color: var(--brown);
-      padding: 0 20px;
-      word-break: break-word;
-    }
-
-    .winner {
-      animation: pop 0.5s ease;
-    }
-
-    @keyframes pop {
-      0% { transform: scale(0.8); opacity: 0; }
-      70% { transform: scale(1.08); }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    .history {
-      margin-top: 18px;
-      background: white;
-      border-radius: 16px;
-      border: 3px dashed var(--orange);
-      padding: 14px;
-      max-height: 220px;
-      overflow-y: auto;
-    }
-
-    .history ul {
-      margin: 0;
-      padding-left: 20px;
-    }
-
-    .counter {
-      margin-top: 12px;
-      font-weight: bold;
-      color: var(--blue);
-    }
-
-    .footer-note {
-      margin-top: 14px;
-      text-align: center;
-      color: var(--brown);
-      font-size: 0.95rem;
-    }
-
-    @media (max-width: 850px) {
-      .layout {
-        grid-template-columns: 1fr;
-      }
-
-      h1 {
-        font-size: 2.1rem;
-      }
-
-      .reel {
-        font-size: 1.5rem;
-      }
-
-      button {
-        width: 100%;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tirage au sort - classe de sixième</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Bangers&display=swap" rel="stylesheet">
+<style>:root{--red:#e03e2d;--yellow:#f5c518;--green:#3daa44;--blue:#1e4d9b;--orange:#f47920;--brown:#5c3317;--white:#fffdf7;--dark:#1a1a2e}*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Nunito',sans-serif;background:var(--dark);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px;overflow-x:hidden;position:relative}body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle,var(--red) 2px,transparent 2px) , radial-gradient(circle,var(--yellow) 2px,transparent 2px) , radial-gradient(circle,var(--green) 2px,transparent 2px) , radial-gradient(circle,var(--blue) 2px,transparent 2px) , radial-gradient(circle,var(--orange) 2px,transparent 2px);background-size:120px 120px , 80px 80px , 100px 100px , 90px 90px , 70px 70px;background-position:0 0 , 40px 40px , 20px 60px , 60px 20px , 10px 50px;opacity:.07;pointer-events:none;z-index:0}.container{position:relative;z-index:1;width:100%;max-width:860px;display:flex;flex-direction:column;align-items:center;gap:24px}.title-block{text-align:center;margin-bottom:4px}.title-block h1{font-family:'Bangers',cursive;font-size:clamp(2.2rem,6vw,4rem);letter-spacing:3px;line-height:1;background:linear-gradient(135deg,var(--yellow),var(--orange),var(--red));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 2px 8px rgba(245,197,24,.4))}.title-block p{color:rgba(255,255,255,.5);font-size:.85rem;margin-top:4px;letter-spacing:1px;text-transform:uppercase}.mm-dots{display:flex;gap:8px;justify-content:center;margin-bottom:4px}.mm-dot{width:18px;height:18px;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,.4)}.main-layout{display:flex;gap:24px;width:100%;align-items:flex-start;flex-wrap:wrap;justify-content:center}.panel{background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.1);border-radius:20px;padding:20px;flex:1;min-width:240px;max-width:300px}.panel h2{font-size:1rem;font-weight:800;color:var(--yellow);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px}textarea{width:100%;height:180px;background:rgba(0,0,0,.3);border:2px solid rgba(255,255,255,.15);border-radius:12px;color:#fff;font-family:'Nunito',sans-serif;font-size:.9rem;padding:10px 12px;resize:vertical;outline:none;transition:border-color .2s;line-height:1.6}textarea:focus{border-color:var(--yellow)}textarea::placeholder{color:rgba(255,255,255,.3)}.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:50px;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800;transition:transform .15s , filter .15s;white-space:nowrap}.btn:hover:not(:disabled) {filter:brightness(1.1);transform:translateY(-2px)}.btn:active:not(:disabled) {transform:translateY(0)}.btn:disabled{opacity:.4;cursor:not-allowed}.btn-load{background:var(--blue);color:#fff;padding:10px 18px;font-size:.9rem;width:100%;margin-top:10px}.btn-reset{background:var(--red);color:#fff;padding:8px 16px;font-size:.82rem;width:100%;margin-top:10px}.counter{margin-top:12px;font-size:.8rem;color:rgba(255,255,255,.5);text-align:center}.counter span{color:var(--yellow);font-weight:700}.slot-area{flex:1.5;min-width:280px;max-width:440px;display:flex;flex-direction:column;align-items:center;gap:16px}.machine-body{background:linear-gradient(160deg,#2a2a4a 0%,#1a1a2e 100%);border:3px solid rgba(255,255,255,.12);border-radius:24px;padding:24px;width:100%;display:flex;flex-direction:column;align-items:center;gap:20px;box-shadow:0 20px 60px rgba(0,0,0,.5) , inset 0 1px 0 rgba(255,255,255,.1);position:relative;overflow:hidden}.lights-strip{display:flex;gap:8px;margin-bottom:-8px}.light{width:10px;height:10px;border-radius:50%;animation:blink 1.2s ease-in-out infinite}.light:nth-child(1) {background:var(--red);animation-delay:0s}.light:nth-child(2) {background:var(--yellow);animation-delay:.2s}.light:nth-child(3) {background:var(--green);animation-delay:.4s}.light:nth-child(4) {background:var(--blue);animation-delay:.6s}.light:nth-child(5) {background:var(--orange);animation-delay:.8s}.light:nth-child(6) {background:var(--red);animation-delay:1.0s}.light:nth-child(7) {background:var(--yellow);animation-delay:.2s}.light:nth-child(8) {background:var(--green);animation-delay:.4s}.light:nth-child(9) {background:var(--blue);animation-delay:.6s}@keyframes blink {
+      0%,100% { opacity: 1; }
+      50% { opacity: 0.2; }
+    }.reel-window{width:100%;height:110px;background:#0a0a1a;border-radius:16px;border:3px solid rgba(255,255,255,.1);overflow:hidden;position:relative;box-shadow:inset 0 4px 20px rgba(0,0,0,.8)}.reel-window::before,.reel-window::after{content:'';position:absolute;left:0;right:0;height:32px;z-index:3;pointer-events:none}.reel-window::before{top:0;background:linear-gradient(to bottom,#0a0a1a,transparent)}.reel-window::after{bottom:0;background:linear-gradient(to top,#0a0a1a,transparent)}.reel-center-line{position:absolute;top:50%;left:0;right:0;height:54px;margin-top:-27px;border-top:2px solid rgba(245,197,24,.6);border-bottom:2px solid rgba(245,197,24,.6);background:rgba(245,197,24,.04);z-index:2;pointer-events:none}.reel-track{position:absolute;top:0;left:0;right:0;display:flex;flex-direction:column;align-items:center;will-change:transform}.reel-item{height:110px;display:flex;align-items:center;justify-content:center;width:100%;padding:0 16px;font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(1rem,3.5vw,1.5rem);color:#fff;text-align:center;line-height:1.2;flex-shrink:0}.btn-spin{background:linear-gradient(135deg,var(--yellow),var(--orange));color:var(--brown);padding:14px 40px;font-size:1.1rem;letter-spacing:1px;box-shadow:0 6px 20px rgba(245,197,24,.4);width:100%}.btn-spin:not(:disabled):hover {box-shadow:0 8px 28px rgba(245,197,24,.6)}.result-display{width:100%;min-height:56px;background:rgba(0,0,0,.3);border:2px solid rgba(255,255,255,.08);border-radius:14px;display:flex;align-items:center;justify-content:center;padding:12px 16px;text-align:center}.result-display .result-text{font-weight:800;font-size:1.1rem;color:var(--white);opacity:.4;transition:opacity .3s}.result-display.has-result .result-text{opacity:1}.result-display .winner-label{font-size:.7rem;text-transform:uppercase;letter-spacing:2px;color:var(--yellow);font-weight:700;display:block;margin-bottom:2px}.history-panel{width:100%;max-width:860px}.history-panel h2{font-size:.85rem;font-weight:800;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:2px;margin-bottom:10px}.history-list{display:flex;flex-wrap:wrap;gap:8px}.history-tag{padding:4px 14px;border-radius:50px;font-size:.82rem;font-weight:700;color:#fff;opacity:.8;display:flex;align-items:center;gap:6px}.history-tag .num{background:rgba(0,0,0,.25);border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:900}.celebration{position:fixed;inset:0;pointer-events:none;z-index:100;overflow:hidden}.confetti-piece{position:absolute;width:10px;height:10px;border-radius:50%;animation:confettiFall 1.5s ease-in forwards}@keyframes confettiFall {
+      0%   { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    }@keyframes winnerFlash {
+      0%,100% { background: rgba(245,197,24,0.0); }
+      30%     { background: rgba(245,197,24,0.12); }
+      60%     { background: rgba(245,197,24,0.06); }
+    }.machine-body.flash{animation:winnerFlash .6s ease}@keyframes spinnerPulse {
+      0%,100% { box-shadow: 0 6px 20px rgba(245,197,24,0.4); }
+      50%     { box-shadow: 0 6px 40px rgba(245,197,24,0.9); }
+    }.spinning .btn-spin{animation:spinnerPulse .4s ease infinite}.empty-hint{color:rgba(255,255,255,.25);font-size:.85rem;text-align:center;padding:8px}.no-more{color:var(--orange);font-weight:800;text-align:center;font-size:.9rem}</style>
 </head>
 <body>
-  <div class="container">
-    <h1>Tirage au sort en classe</h1>
+<div class="celebration" id="celebration"></div>
+<div class="container">
+<!-- TITLE -->
+<div class="title-block">
+<div class="mm-dots">
+<div class="mm-dot" style="background:var(--red)"></div>
+<div class="mm-dot" style="background:var(--yellow)"></div>
+<div class="mm-dot" style="background:var(--green)"></div>
+<div class="mm-dot" style="background:var(--blue)"></div>
+<div class="mm-dot" style="background:var(--orange)"></div>
+<div class="mm-dot" style="background:var(--brown)"></div>
+</div>
+<h1>🎰 Tirage au sort en classe</h1>
+<p>Chaque tiré est exclu des prochains tours</p>
+</div>
+<!-- MAIN -->
+<div class="main-layout">
+<!-- INPUT PANEL -->
+<div class="panel">
+<h2>📋 Participants</h2>
+<textarea id="inputList">Max
+  Rayan
+  Mila
+  Timéo
+  William
+  Anaïs
+  Thalia
+  Sasha
+  Paul
+  Abby
+</textarea>
+<button class="btn btn-load" onclick="loadList()">✅ Charger la liste</button>
+<button class="btn btn-reset" onclick="resetAll()">🔄 Remettre à zéro</button>
+<div class="counter" id="counter">Aucune liste chargée</div>
+</div>
+<!-- SLOT MACHINE -->
+<div class="slot-area">
+<div class="machine-body" id="machineBody">
+<div class="lights-strip">
+<div class="light"></div><div class="light"></div><div class="light"></div>
+<div class="light"></div><div class="light"></div><div class="light"></div>
+<div class="light"></div><div class="light"></div><div class="light"></div>
+</div>
+<div class="reel-window">
+<div class="reel-center-line"></div>
+<div class="reel-track" id="reelTrack">
+<div class="reel-item" style="color:rgba(255,255,255,0.2)">— — —</div>
+</div>
+</div>
+<div class="result-display" id="resultDisplay">
+<div class="result-text" id="resultText">Chargez une liste et lancez !</div>
+</div>
+<button class="btn btn-spin" id="spinBtn" onclick="spin()" disabled>
+🎰 &nbsp;LANCER !
+</button>
+</div>
+</div>
+</div>
+<!-- HISTORY -->
+<div class="history-panel" id="historyPanel" style="display:none">
+<h2>🏷️ Historique des tirages</h2>
+<div class="history-list" id="historyList"></div>
+</div>
+</div>
+<script>
+  const COLORS = ['#E03E2D','#F5C518','#3DAA44','#1E4D9B','#F47920','#8B5CF6','#EC4899'];
+  let allItems = [];
+  let remaining = [];
+  let drawn = [];
+  let isSpinning = false;
+  let colorMap = {};
 
-    <div class="layout">
-      <div class="panel">
-        <h2>Participants / sujets</h2>
-        <p>Collez une information par ligne : prénom, nom, groupe ou sujet.</p>
+  function loadList() {
+    const raw = document.getElementById('inputList').value;
+    const items = raw.split('\n').map(s => s.trim()).filter(s => s.length > 0);
+    if (items.length === 0) return;
 
-        <textarea id="entries" placeholder="Exemple :&#10;Emma&#10;Lucas Martin&#10;Exposé Histoire&#10;Groupe 3"></textarea>
+    allItems = items;
+    remaining = [...items];
+    drawn = [];
+    colorMap = {};
+    items.forEach((item, i) => { colorMap[item] = COLORS[i % COLORS.length]; });
 
-        <div class="buttons">
-          <button class="reload-btn" id="loadBtn">Charger la liste</button>
-          <button type="button" class="reload-btn" id="importBtn">Importer un fichier</button>
-          <input type="file" id="fileInput" accept=".txt,.csv,.xlsx" style="display:none;" />
-          <button class="draw-btn" id="drawBtn">Lancer le tirage</button>
-          <button class="reset-btn" id="resetBtn">Remettre à zéro</button>
-        </div>
+    updateUI();
+    resetReelDisplay();
+    showResult('', false);
+    document.getElementById('historyPanel').style.display = 'none';
+    document.getElementById('historyList').innerHTML = '';
+  }
 
-        <div class="counter" id="counter">
-          Aucun élément chargé.
-        </div>
-      </div>
+  function resetAll() {
+    remaining = [...allItems];
+    drawn = [];
+    updateUI();
+    resetReelDisplay();
+    showResult('', false);
+    document.getElementById('historyPanel').style.display = 'none';
+    document.getElementById('historyList').innerHTML = '';
+  }
 
-      <div class="panel">
-        <h2>Machine à sous du tirage</h2>
-
-        <div class="slot-machine">
-          <div class="lights">
-            <div class="light"></div>
-            <div class="light"></div>
-            <div class="light"></div>
-            <div class="light"></div>
-            <div class="light"></div>
-            <div class="light"></div>
-            <div class="light"></div>
-            <div class="light"></div>
-          </div>
-
-          <div class="display">
-            <div class="reel" id="reel">Prêt pour le tirage 🎰</div>
-          </div>
-        </div>
-
-        <div class="history">
-          <strong>Historique des tirages :</strong>
-          <ul id="historyList"></ul>
-        </div>
-
-        <div class="footer-note">
-          Chaque élément tiré est automatiquement retiré des prochains tirages.
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Librairie XLSX pour lecture des fichiers Excel -->
-  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
-  <script>
-    let availableEntries = [];
-    let drawHistory = [];
-    let spinning = false;
-
-    const entriesInput = document.getElementById('entries');
-    const reel = document.getElementById('reel');
-    const historyList = document.getElementById('historyList');
-    const counter = document.getElementById('counter');
-    const drawBtn = document.getElementById('drawBtn');
-
-    function updateCounter() {
-      if (availableEntries.length === 0) {
-        counter.textContent = 'Aucun élément disponible.';
-      } else {
-        counter.textContent = `${availableEntries.length} élément(s) restant(s) pour le tirage.`;
-      }
+  function updateUI() {
+    const total = allItems.length;
+    const rem = remaining.length;
+    const counterEl = document.getElementById('counter');
+    if (total === 0) {
+      counterEl.innerHTML = 'Aucune liste chargée';
+      document.getElementById('spinBtn').disabled = true;
+    } else if (rem === 0) {
+      counterEl.innerHTML = `<span class="no-more">Tous les participants ont été tirés !</span>`;
+      document.getElementById('spinBtn').disabled = true;
+    } else {
+      counterEl.innerHTML = `<span>${rem}</span> restant${rem>1?'s':''} sur ${total}`;
+      document.getElementById('spinBtn').disabled = false;
     }
+  }
 
-    function loadEntries() {
-      const raw = entriesInput.value
-        .split('\n')
-        .map(item => item.trim())
-        .filter(item => item.length > 0);
+  function resetReelDisplay() {
+    const track = document.getElementById('reelTrack');
+    track.innerHTML = '<div class="reel-item" style="color:rgba(255,255,255,0.2)">— — —</div>';
+    track.style.transition = 'none';
+    track.style.transform = 'translateY(0)';
+  }
 
-      const unique = [...new Set(raw)];
-
-      availableEntries = unique;
-      drawHistory = [];
-      historyList.innerHTML = '';
-
-      reel.textContent = availableEntries.length
-        ? 'Liste chargée 🎉'
-        : 'Ajoutez des éléments à tirer';
-
-      updateCounter();
+  function showResult(name, hasResult) {
+    const display = document.getElementById('resultDisplay');
+    const text = document.getElementById('resultText');
+    if (hasResult) {
+      display.classList.add('has-result');
+      text.innerHTML = `<span class="winner-label">🎉 Tiré au sort</span>${name}`;
+    } else {
+      display.classList.remove('has-result');
+      text.innerHTML = name || 'Chargez une liste et lancez !';
     }
+  }
 
-    function addToHistory(item) {
-      const li = document.createElement('li');
-      li.textContent = item;
-      historyList.prepend(li);
+  function spin() {
+    if (isSpinning || remaining.length === 0) return;
+    isSpinning = true;
+    document.getElementById('spinBtn').disabled = true;
+    document.getElementById('machineBody').classList.add('spinning');
+
+    // Pick winner
+    const winIdx = Math.floor(Math.random() * remaining.length);
+    const winner = remaining[winIdx];
+
+    // Build reel items: shuffle + put winner in center
+    const pool = shuffleArray([...remaining]);
+    // Ensure enough items for scrolling illusion
+    let reelItems = [];
+    const rounds = 4;
+    for (let r = 0; r < rounds; r++) {
+      reelItems = reelItems.concat(shuffleArray([...remaining]));
     }
+    // Last visible: winner
+    reelItems.push(winner);
 
-    async function spinAndDraw() {
-      if (spinning) return;
-
-      if (availableEntries.length === 0) {
-        reel.textContent = 'Plus aucun élément disponible 😅';
-        return;
-      }
-
-      spinning = true;
-      drawBtn.disabled = true;
-      reel.classList.remove('winner');
-
-      const spinDuration = 3000;
-      const intervalTime = 80;
-
-      const interval = setInterval(() => {
-        const randomIndex = Math.floor(Math.random() * availableEntries.length);
-        reel.textContent = availableEntries[randomIndex];
-      }, intervalTime);
-
-      await new Promise(resolve => setTimeout(resolve, spinDuration));
-
-      clearInterval(interval);
-
-      const winnerIndex = Math.floor(Math.random() * availableEntries.length);
-      const winner = availableEntries[winnerIndex];
-
-      availableEntries.splice(winnerIndex, 1);
-      drawHistory.push(winner);
-
-      reel.textContent = `🎉 ${winner} 🎉`;
-      reel.classList.add('winner');
-
-      addToHistory(winner);
-      updateCounter();
-
-      spinning = false;
-      drawBtn.disabled = false;
-    }
-
-    async function importFile(file) {
-      const extension = file.name.split('.').pop().toLowerCase();
-
-      if (extension === 'txt' || extension === 'csv') {
-        const text = await file.text();
-        entriesInput.value = text
-          .split(/\r?\n|,|;/)
-          .map(v => v.trim())
-          .filter(v => v)
-          .join('\n');
-
-        loadEntries();
-        return;
-      }
-
-      if (extension === 'xlsx') {
-        const data = await file.arrayBuffer();
-        const workbook = XLSX.read(data);
-        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-        const rows = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
-
-        const values = rows
-          .flat()
-          .map(v => String(v).trim())
-          .filter(v => v);
-
-        entriesInput.value = values.join('\n');
-        loadEntries();
-        return;
-      }
-
-      alert('Format non pris en charge.');
-    }
-
-    function resetHistory() {
-      availableEntries = [];
-      drawHistory = [];
-      entriesInput.value = '';
-      historyList.innerHTML = '';
-      reel.textContent = 'Réinitialisation effectuée ✨';
-      updateCounter();
-    }
-
-    document.getElementById('loadBtn').addEventListener('click', loadEntries);
-    document.getElementById('drawBtn').addEventListener('click', spinAndDraw);
-    document.getElementById('resetBtn').addEventListener('click', resetHistory);
-
-    const importBtn = document.getElementById('importBtn');
-    const fileInput = document.getElementById('fileInput');
-
-    importBtn.addEventListener('click', () => {
-      fileInput.value = '';
-      fileInput.click();
+    // Render reel
+    const track = document.getElementById('reelTrack');
+    track.style.transition = 'none';
+    track.style.transform = 'translateY(0)';
+    track.innerHTML = '';
+    reelItems.forEach(name => {
+      const div = document.createElement('div');
+      div.className = 'reel-item';
+      div.textContent = name;
+      div.style.color = colorMap[name] || '#fff';
+      track.appendChild(div);
     });
 
-    document.getElementById('fileInput').addEventListener('change', async (event) => {
-      const file = event.target.files[0];
-      if (file) {
-        await importFile(file);
-      }
-    });
+    const itemH = 110;
+    const totalItems = reelItems.length;
+    // We want winner at center → last item
+    const targetY = -(totalItems - 1) * itemH;
 
-    updateCounter();
-  </script>
+    // Start from top
+    track.style.transform = `translateY(0px)`;
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        // Fast scroll with ease-out
+        const duration = 2200 + Math.random() * 600;
+        track.style.transition = `transform ${duration}ms cubic-bezier(0.15, 0.85, 0.35, 1.0)`;
+        track.style.transform = `translateY(${targetY}px)`;
+
+        setTimeout(() => {
+          // Done!
+          isSpinning = false;
+          document.getElementById('machineBody').classList.remove('spinning');
+
+          // Remove from remaining
+          remaining.splice(winIdx, 1);
+          drawn.push(winner);
+
+          showResult(winner, true);
+          updateUI();
+          addToHistory(winner);
+          celebrate(colorMap[winner] || '#F5C518');
+
+          // Flash machine
+          const body = document.getElementById('machineBody');
+          body.classList.add('flash');
+          setTimeout(() => body.classList.remove('flash'), 700);
+
+        }, duration + 50);
+      });
+    });
+  }
+
+  function addToHistory(name) {
+    const panel = document.getElementById('historyPanel');
+    const list = document.getElementById('historyList');
+    panel.style.display = 'block';
+
+    const tag = document.createElement('div');
+    tag.className = 'history-tag';
+    tag.style.background = colorMap[name] || '#F47920';
+    tag.innerHTML = `<span class="num">${drawn.length}</span>${name}`;
+    list.appendChild(tag);
+  }
+
+  function celebrate(color) {
+    const container = document.getElementById('celebration');
+    container.innerHTML = '';
+    const colors = ['#E03E2D','#F5C518','#3DAA44','#1E4D9B','#F47920', color];
+    for (let i = 0; i < 60; i++) {
+      const p = document.createElement('div');
+      p.className = 'confetti-piece';
+      p.style.left = Math.random() * 100 + 'vw';
+      p.style.top = '-10px';
+      p.style.background = colors[Math.floor(Math.random() * colors.length)];
+      p.style.width = (6 + Math.random() * 8) + 'px';
+      p.style.height = (6 + Math.random() * 8) + 'px';
+      p.style.animationDelay = Math.random() * 0.8 + 's';
+      p.style.animationDuration = (1.2 + Math.random() * 0.8) + 's';
+      container.appendChild(p);
+    }
+    setTimeout(() => { container.innerHTML = ''; }, 3000);
+  }
+
+  // Auto-load on page start
+  window.addEventListener('DOMContentLoaded', () => loadList());
+
+  function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+</script>
 </body>
 </html>
