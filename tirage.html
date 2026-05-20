@@ -121,12 +121,7 @@ window.addEventListener('DOMContentLoaded', () => {
   resetReelDisplay();
 });
 
-  // 💾 ICI (bonne place)
-  localStorage.setItem(classe, JSON.stringify(items));
 
-  updateUI();
-  resetReelDisplay();
-  showResult('', false);
 
  function resetAll() {
   remaining = [...allItems];
@@ -137,6 +132,32 @@ window.addEventListener('DOMContentLoaded', () => {
   showResult('', false);
 
   localStorage.removeItem(classe); // 💾 supprime sauvegarde
+}
+
+  function loadList() {
+  const raw = document.getElementById('inputList').value;
+
+  const items = raw.split('\n')
+    .map(s => s.trim())
+    .filter(s => s.length > 0);
+
+  if (items.length === 0) return;
+
+  allItems = items;
+  remaining = [...items];
+  drawn = [];
+
+  colorMap = {};
+  items.forEach((item, i) => {
+    colorMap[item] = COLORS[i % COLORS.length];
+  });
+
+  // 💾 SAUVEGARDE ICI (IMPORTANT)
+  localStorage.setItem(classe, JSON.stringify(items));
+
+  updateUI();
+  resetReelDisplay();
+  showResult('', false);
 }
 
   function updateUI() {
