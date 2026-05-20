@@ -83,12 +83,18 @@ Mila
 
   const defaultLists = {
   miq6: ["Max","Rayan","Mila","Timéo","William","Anaïs","Thalia","Sasha","Paul","Abby"],
-  miq5: ["Élève1","Élève2","Élève3"],
-  miq4: ["Alice","Bob","Charlie"],
-  miq3: ["Jean","Léo","Emma"]
+  miq5: ["Elliot","Lilou","Eden","Kelya","Alix","Samuel","Anna","Clélia","Orianna"],
+  miq4: ["Zoey","Clémence","Luc","Julie","Emy"],
+  miq3: ["Perline","Arthur","Kaël"]
 };
 
   let classe = "miq6";
+
+  let allItems = [];
+let remaining = [];
+let drawn = [];
+let isSpinning = false;
+let colorMap = {};
 
 window.addEventListener('DOMContentLoaded', () => {
   const params = new URLSearchParams(window.location.search);
@@ -117,6 +123,8 @@ window.addEventListener('DOMContentLoaded', () => {
     colorMap[item] = COLORS[i % COLORS.length];
   });
 
+  isSpinning = false; // IMPORTANT (débloque le bouton)
+
   updateUI();
   resetReelDisplay();
 });
@@ -139,7 +147,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   const items = raw.split('\n')
     .map(s => s.trim())
-    .filter(s => s.length > 0);
+    .filter(Boolean);
 
   if (items.length === 0) return;
 
@@ -152,7 +160,6 @@ window.addEventListener('DOMContentLoaded', () => {
     colorMap[item] = COLORS[i % COLORS.length];
   });
 
-  // 💾 SAUVEGARDE ICI (IMPORTANT)
   localStorage.setItem(classe, JSON.stringify(items));
 
   updateUI();
@@ -163,21 +170,25 @@ window.addEventListener('DOMContentLoaded', () => {
   function updateUI() {
   const total = allItems.length;
   const rem = remaining.length;
-  const counterEl = document.getElementById('counter');
   const spinBtn = document.getElementById('spinBtn');
+  const counterEl = document.getElementById('counter');
+
+  console.log("UI UPDATE", { total, rem });
 
   if (total === 0) {
     counterEl.innerHTML = 'Aucune liste chargée';
     spinBtn.disabled = true;
-  } 
-  else if (rem === 0) {
+    return;
+  }
+
+  if (rem <= 0) {
     counterEl.innerHTML = `<span class="no-more">Tous les participants ont été tirés !</span>`;
     spinBtn.disabled = true;
-  } 
-  else {
-    counterEl.innerHTML = `<span>${rem}</span> restant${rem > 1 ? 's' : ''} sur ${total}`;
-    spinBtn.disabled = false;
+    return;
   }
+
+  counterEl.innerHTML = `<span>${rem}</span> restant${rem > 1 ? 's' : ''} sur ${total}`;
+  spinBtn.disabled = false;
 }
 
   function resetReelDisplay() {
@@ -200,6 +211,11 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   function spin() {
+    console.log("SPIN OK", remaining);
+    if (!remaining || remaining.length === 0) {
+  console.warn("Spin bloqué: liste vide");
+  return;
+}
     if (isSpinning || remaining.length === 0) return;
     isSpinning = true;
     document.getElementById('spinBtn').disabled = true;
